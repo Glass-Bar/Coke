@@ -1,0 +1,7 @@
+com.ciube.glass.coke.app-pngs-0 /home/ciubeciube/_projects/google glass/Coke/app/build/generated/res/pngs/debug
+com.ciube.glass.coke.app-resValues-1 /home/ciubeciube/_projects/google glass/Coke/app/build/generated/res/resValues/debug
+com.ciube.glass.coke.app-packageDebugResources-2 /home/ciubeciube/_projects/google glass/Coke/app/build/intermediates/incremental/debug/packageDebugResources/merged.dir
+com.ciube.glass.coke.app-packageDebugResources-3 /home/ciubeciube/_projects/google glass/Coke/app/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
+com.ciube.glass.coke.app-merged_res-4 /home/ciubeciube/_projects/google glass/Coke/app/build/intermediates/merged_res/debug
+com.ciube.glass.coke.app-debug-5 /home/ciubeciube/_projects/google glass/Coke/app/src/debug/res
+com.ciube.glass.coke.app-main-6 /home/ciubeciube/_projects/google glass/Coke/app/src/main/res
