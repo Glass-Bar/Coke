@@ -13,4 +13,5 @@ A Glass utility Glassware
 4. write your new list item
 
 ## Avaibles functions
-| Wifi Toggle | Enable / Disable Wifi - persists after shutdown
+| Toggle | Description |
+| Wifi Toggle | Enable / Disable Wifi - persists after shutdown |
