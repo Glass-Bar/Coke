@@ -11,3 +11,6 @@ A Glass utility Glassware
 2. write your new action
 3. go to `/app/src/main/java/com/ciube/glass/coke/GolfMenuItems.java`
 4. write your new list item
+
+## Avaibles functions
+| Wifi Toggle | Enable / Disable Wifi - persists after shutdown
