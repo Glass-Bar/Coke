@@ -17,12 +17,12 @@ public class GolfSliderView extends LinearLayout {
     private final int mMax;
     private int mValue;
 
-    public GolfSliderView(Context ctx, String name, int min, int max) {
-        super(ctx);
-        mMin = min;
-        mMax = max;
-        mValue = min;
-
+public GolfSliderView(Context ctx, String name, int min, int max, int initialValue) {
+    super(ctx);
+    mMin = min;
+    mMax = max;
+    mValue = Math.max(min, Math.min(max, initialValue)); // clamp to range
+    
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER);
         setBackgroundColor(Color.TRANSPARENT);
@@ -40,7 +40,7 @@ public class GolfSliderView extends LinearLayout {
         // Progress bar
         mProgressBar = new ProgressBar(ctx, null, android.R.attr.progressBarStyleHorizontal);
         mProgressBar.setMax(mMax - mMin);
-        mProgressBar.setProgress(0);
+        mProgressBar.setProgress(mValue - mMin);
         LinearLayout.LayoutParams pbParams = new LinearLayout.LayoutParams(
             LayoutParams.MATCH_PARENT, dp(ctx, 8)
         );

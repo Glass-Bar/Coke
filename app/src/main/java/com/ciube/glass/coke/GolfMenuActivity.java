@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.google.android.glass.media.Sounds;
@@ -23,7 +22,6 @@ public class GolfMenuActivity extends Activity {
     private GolfCardScrollAdapter mAdapter;
     private GestureDetector mGestureDetector;
 
-    // Slider state
     private boolean mSliderMode = false;
     private GolfMenuItem mSliderItem;
     private GolfSliderView mSliderView;
@@ -89,13 +87,13 @@ public class GolfMenuActivity extends Activity {
                 playSoundTap();
                 return true;
             case TAP:
-                // Confirm — execute action with selected value
                 final int value = mSliderView.getValue();
+                final GolfMenuItem sliderItem = mSliderItem;
+                playSoundTap();
                 closeSlider();
-                executeAction(mSliderItem, value);
+                executeAction(sliderItem, value);
                 return true;
             case SWIPE_DOWN:
-                // Cancel
                 closeSlider();
                 playSoundTap();
                 return true;
@@ -109,7 +107,7 @@ public class GolfMenuActivity extends Activity {
         mSliderMode = true;
         mSliderItem = item;
         mSliderView = new GolfSliderView(this, item.getName(),
-            item.getMinValue(), item.getMaxValue());
+            item.getMinValue(), item.getMaxValue(), item.getInitialValue());
         setContentView(mSliderView);
     }
 
@@ -132,7 +130,7 @@ public class GolfMenuActivity extends Activity {
                     public void run() {
                         mAdapter.refreshIndicators();
                     }
-                }, 1500);
+                }, item.getRefreshDelay());
             }
         }).start();
     }

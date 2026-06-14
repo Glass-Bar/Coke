@@ -45,9 +45,11 @@ public class GolfActions {
         wifiManager.setWifiEnabled(!isOn);
     }
 
-    public static void setVolume(Context context, int value) {
-        AudioManager audio =
-            (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        audio.setStreamVolume(AudioManager.STREAM_MUSIC, value, 0);
+    public static void setScreenTimeout(Context context, int seconds) {
+        android.provider.Settings.System.putInt(
+            context.getContentResolver(),
+            android.provider.Settings.System.SCREEN_OFF_TIMEOUT,
+            seconds * 1000
+        );
     }
 }
