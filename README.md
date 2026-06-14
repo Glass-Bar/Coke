@@ -9,6 +9,8 @@ A Glass utility Glassware
 ## How to add items
 1. go to `/app/src/main/java/com/ciube/glass/coke/GolfActions.java`
 2. write your new action
+3. got to `/app/src/main/java/com/ciube/glass/coke/GolfIndicators.java`
+4. write your new indicator
 3. go to `/app/src/main/java/com/ciube/glass/coke/GolfMenuItems.java`
 4. write your new list item
 
