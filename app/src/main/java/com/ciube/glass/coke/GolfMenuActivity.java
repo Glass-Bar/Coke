@@ -1,26 +1,19 @@
 package com.ciube.glass.coke;
 
 import android.app.Activity;
+import android.content.Context;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.google.android.glass.media.Sounds;
 import com.google.android.glass.touchpad.Gesture;
 import com.google.android.glass.touchpad.GestureDetector;
 import com.google.android.glass.widget.CardScrollView;
 
-import android.content.Context;
-import android.media.AudioManager;
-import com.google.android.glass.media.Sounds;
-
 import java.util.List;
 
-/**
- * Immersion activity that shows a horizontally scrollable list of golf
- * utility cards. Tapping on a card dispatches the item's action.
- *
- * To add behaviour to an action, extend handleAction() below.
- */
 public class GolfMenuActivity extends Activity {
 
     private static final String TAG = "GolfMenuActivity";
@@ -30,11 +23,16 @@ public class GolfMenuActivity extends Activity {
     private GolfCardScrollAdapter mAdapter;
     private GestureDetector mGestureDetector;
 
+    // Slider state
+    private boolean mSliderMode = false;
+    private GolfMenuItem mSliderItem;
+    private GolfSliderView mSliderView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        List<GolfMenuItem> items = GolfMenuItems.getItems(this);        
+        List<GolfMenuItem> items = GolfMenuItems.getItems(this);
         mAdapter = new GolfCardScrollAdapter(this, items);
 
         mCardScrollView = new CardScrollView(this);
@@ -42,59 +40,105 @@ public class GolfMenuActivity extends Activity {
         mCardScrollView.activate();
 
         setContentView(mCardScrollView);
-
         mGestureDetector = buildGestureDetector();
     }
 
-    // Route touch events through the GestureDetector
     @Override
     public boolean onGenericMotionEvent(MotionEvent event) {
         return mGestureDetector != null && mGestureDetector.onMotionEvent(event);
     }
-
-    // --- Gesture detector ---
 
     private GestureDetector buildGestureDetector() {
         return new GestureDetector(this)
             .setBaseListener(new GestureDetector.BaseListener() {
                 @Override
                 public boolean onGesture(Gesture gesture) {
-                    if (gesture == Gesture.TAP) {
-                        int position = mCardScrollView.getSelectedItemPosition();
-                        if (position >= 0 && position < mAdapter.getCount()) {
-                            GolfMenuItem item = (GolfMenuItem) mAdapter.getItem(position);
-                            handleAction(item);
-                            return true;
-                        }
+                    if (mSliderMode) {
+                        return handleSliderGesture(gesture);
+                    } else {
+                        return handleMenuGesture(gesture);
                     }
-                    return false;
                 }
             });
     }
 
-    // --- Action dispatcher ---
+    private boolean handleMenuGesture(Gesture gesture) {
+        if (gesture == Gesture.TAP) {
+            int position = mCardScrollView.getSelectedItemPosition();
+            if (position >= 0 && position < mAdapter.getCount()) {
+                GolfMenuItem item = (GolfMenuItem) mAdapter.getItem(position);
+                if (item.getType() == ItemType.SLIDER) {
+                    openSlider(item);
+                } else {
+                    executeAction(item, 0);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
 
-    /**
-     * Called when the user taps on a card.
-     * Add a case here for each ACTION_* string defined in GolfMenuItems.
-     */
-    private void handleAction(GolfMenuItem item) {
-        AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        audio.playSoundEffect(Sounds.TAP);
+    private boolean handleSliderGesture(Gesture gesture) {
+        switch (gesture) {
+            case SWIPE_RIGHT:
+                mSliderView.increment();
+                playSoundTap();
+                return true;
+            case SWIPE_LEFT:
+                mSliderView.decrement();
+                playSoundTap();
+                return true;
+            case TAP:
+                // Confirm — execute action with selected value
+                final int value = mSliderView.getValue();
+                closeSlider();
+                executeAction(mSliderItem, value);
+                return true;
+            case SWIPE_DOWN:
+                // Cancel
+                closeSlider();
+                playSoundTap();
+                return true;
+            default:
+                return false;
+        }
+    }
 
-        Log.d(TAG, "Executing: " + item.getName());
+    private void openSlider(GolfMenuItem item) {
+        playSoundTap();
+        mSliderMode = true;
+        mSliderItem = item;
+        mSliderView = new GolfSliderView(this, item.getName(),
+            item.getMinValue(), item.getMaxValue());
+        setContentView(mSliderView);
+    }
+
+    private void closeSlider() {
+        mSliderMode = false;
+        mSliderItem = null;
+        mSliderView = null;
+        setContentView(mCardScrollView);
+    }
+
+    private void executeAction(final GolfMenuItem item, final int value) {
+        playSoundTap();
         final GolfAction action = item.getAction();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                action.execute();
+                action.execute(value);
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         mAdapter.refreshIndicators();
                     }
-                }, 1500); // wait 1.5s for the command to take effect
+                }, 1500);
             }
         }).start();
+    }
+
+    private void playSoundTap() {
+        AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audio.playSoundEffect(Sounds.TAP);
     }
 }

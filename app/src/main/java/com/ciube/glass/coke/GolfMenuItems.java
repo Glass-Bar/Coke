@@ -12,7 +12,7 @@ public class GolfMenuItems {
             new GolfMenuItem("Toggle WiFi",
                 new GolfAction() {
                     @Override
-                    public void execute() {
+                    public void execute(int value) {
                         GolfActions.toggleWifi(context);
                     }
                 },
