@@ -3,7 +3,6 @@ package com.ciube.glass.coke;
 import android.content.Context;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
-import android.util.Log;
 
 public class GolfActions {
 
@@ -38,10 +37,8 @@ public class GolfActions {
 
     // value is unused for toggles, required by GolfAction interface
     public static void toggleWifi(Context context, int value) {
-        WifiManager wifiManager =
-            (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         boolean isOn = wifiManager.isWifiEnabled();
-        Log.d(TAG, "WiFi currently: " + (isOn ? "ON" : "OFF") + ", toggling...");
         wifiManager.setWifiEnabled(!isOn);
     }
 

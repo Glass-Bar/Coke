@@ -28,7 +28,12 @@ public class GolfMenuItems {
                 },
                 GolfIndicators.screenDelay(context),
                 1, 60,
-                GolfIndicators.getScreenTimeoutSeconds(context) // ← initial position
+                new GolfMenuItem.InitialValueProvider() {
+                    @Override
+                    public int get() {
+                        return GolfIndicators.getScreenTimeoutSeconds(context);
+                    }
+                }
             )
         );
     }

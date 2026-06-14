@@ -5,6 +5,7 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.MotionEvent;
+import android.widget.FrameLayout;
 
 import com.google.android.glass.media.Sounds;
 import com.google.android.glass.touchpad.Gesture;
@@ -18,6 +19,7 @@ public class GolfMenuActivity extends Activity {
     private static final String TAG = "GolfMenuActivity";
     private final android.os.Handler mHandler = new android.os.Handler();
 
+    private FrameLayout mRootLayout;
     private CardScrollView mCardScrollView;
     private GolfCardScrollAdapter mAdapter;
     private GestureDetector mGestureDetector;
@@ -37,7 +39,10 @@ public class GolfMenuActivity extends Activity {
         mCardScrollView.setAdapter(mAdapter);
         mCardScrollView.activate();
 
-        setContentView(mCardScrollView);
+        mRootLayout = new FrameLayout(this);
+        mRootLayout.addView(mCardScrollView);
+
+        setContentView(mRootLayout);
         mGestureDetector = buildGestureDetector();
     }
 
@@ -57,6 +62,21 @@ public class GolfMenuActivity extends Activity {
                         return handleMenuGesture(gesture);
                     }
                 }
+            })
+            .setScrollListener(new GestureDetector.ScrollListener() {
+                @Override
+                public boolean onScroll(float displacement, float delta, float velocity) {
+                    if (mSliderMode) {
+                        int steps = Math.round(delta / 10f);
+                        if (steps > 0) {
+                            for (int i = 0; i < steps; i++) mSliderView.decrement();
+                        } else {
+                            for (int i = 0; i < -steps; i++) mSliderView.increment();
+                        }
+                        return true;
+                    }
+                    return false;
+                }
             });
     }
 
@@ -68,6 +88,7 @@ public class GolfMenuActivity extends Activity {
                 if (item.getType() == ItemType.SLIDER) {
                     openSlider(item);
                 } else {
+                    playSoundTap();
                     executeAction(item, 0);
                 }
                 return true;
@@ -78,14 +99,6 @@ public class GolfMenuActivity extends Activity {
 
     private boolean handleSliderGesture(Gesture gesture) {
         switch (gesture) {
-            case SWIPE_RIGHT:
-                mSliderView.increment();
-                playSoundTap();
-                return true;
-            case SWIPE_LEFT:
-                mSliderView.decrement();
-                playSoundTap();
-                return true;
             case TAP:
                 final int value = mSliderView.getValue();
                 final GolfMenuItem sliderItem = mSliderItem;
@@ -94,8 +107,8 @@ public class GolfMenuActivity extends Activity {
                 executeAction(sliderItem, value);
                 return true;
             case SWIPE_DOWN:
-                closeSlider();
                 playSoundTap();
+                closeSlider();
                 return true;
             default:
                 return false;
@@ -108,18 +121,20 @@ public class GolfMenuActivity extends Activity {
         mSliderItem = item;
         mSliderView = new GolfSliderView(this, item.getName(),
             item.getMinValue(), item.getMaxValue(), item.getInitialValue());
-        setContentView(mSliderView);
+
+        mRootLayout.addView(mSliderView);
+        mCardScrollView.setVisibility(android.view.View.GONE);
     }
 
     private void closeSlider() {
         mSliderMode = false;
+        mRootLayout.removeView(mSliderView);
         mSliderItem = null;
         mSliderView = null;
-        setContentView(mCardScrollView);
+        mCardScrollView.setVisibility(android.view.View.VISIBLE);
     }
 
     private void executeAction(final GolfMenuItem item, final int value) {
-        playSoundTap();
         final GolfAction action = item.getAction();
         new Thread(new Runnable() {
             @Override
