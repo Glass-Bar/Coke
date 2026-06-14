@@ -1,4 +1,4 @@
-package com.ciube.glass.coke;
+package com.ciube.glass.coke.item;
 
 import android.content.Context;
 import android.graphics.Color;

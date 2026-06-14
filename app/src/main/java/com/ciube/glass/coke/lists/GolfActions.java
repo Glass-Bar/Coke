@@ -1,8 +1,9 @@
-package com.ciube.glass.coke;
+package com.ciube.glass.coke.lists;
 
 import android.content.Context;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
+import android.util.Log;
 
 public class GolfActions {
 

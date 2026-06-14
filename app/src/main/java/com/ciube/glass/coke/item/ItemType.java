@@ -1,4 +1,4 @@
-package com.ciube.glass.coke;
+package com.ciube.glass.coke.item;
 
 public enum ItemType {
     TOGGLE,

@@ -1,9 +1,10 @@
-package com.ciube.glass.coke;
+package com.ciube.glass.coke.lists;
 
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.provider.Settings;
 import android.util.Log;
+import com.ciube.glass.coke.item.GolfIndicator;
 
 public class GolfIndicators {
 

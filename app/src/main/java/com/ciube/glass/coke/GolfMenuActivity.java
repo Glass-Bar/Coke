@@ -12,6 +12,12 @@ import com.google.android.glass.touchpad.Gesture;
 import com.google.android.glass.touchpad.GestureDetector;
 import com.google.android.glass.widget.CardScrollView;
 
+import com.ciube.glass.coke.item.GolfAction;
+import com.ciube.glass.coke.item.GolfMenuItem;
+import com.ciube.glass.coke.item.GolfSliderView;
+import com.ciube.glass.coke.item.ItemType;
+import com.ciube.glass.coke.lists.GolfMenuItems;
+
 import java.util.List;
 
 public class GolfMenuActivity extends Activity {

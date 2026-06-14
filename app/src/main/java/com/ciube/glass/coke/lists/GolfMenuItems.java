@@ -1,8 +1,10 @@
-package com.ciube.glass.coke;
+package com.ciube.glass.coke.lists;
 
 import android.content.Context;
 import java.util.Arrays;
 import java.util.List;
+import com.ciube.glass.coke.item.GolfAction;
+import com.ciube.glass.coke.item.GolfMenuItem;
 
 public class GolfMenuItems {
 

@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.util.Log;
+import com.ciube.glass.coke.item.GolfIndicator;
+import com.ciube.glass.coke.item.GolfMenuItem;
 
 import com.google.android.glass.widget.CardScrollAdapter;
 
