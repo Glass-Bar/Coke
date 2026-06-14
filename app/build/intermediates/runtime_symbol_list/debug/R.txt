@@ -1,3 +1,0 @@
-int string app_name 0x7f010000
-int style GlassTheme 0x7f020000
-int xml voice_trigger 0x7f030000
