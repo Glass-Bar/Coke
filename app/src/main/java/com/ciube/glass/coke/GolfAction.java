@@ -1,5 +1,5 @@
 package com.ciube.glass.coke;
 
 public interface GolfAction {
-    void execute();
+    void execute(int value);
 }

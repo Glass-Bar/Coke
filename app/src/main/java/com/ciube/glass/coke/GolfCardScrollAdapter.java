@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.util.Log;
 
 import com.google.android.glass.widget.CardScrollAdapter;
 
@@ -53,14 +54,17 @@ public class GolfCardScrollAdapter extends CardScrollAdapter {
     @Override
     public int getPosition(Object item) { return mItems.indexOf(item); }
 
-    /** Call this after an action executes to refresh all indicators. */
     public void refreshIndicators() {
         for (int i = 0; i < mItems.size(); i++) {
             GolfMenuItem item = mItems.get(i);
             if (item.hasIndicator() && mIndicatorViews[i] != null) {
                 GolfIndicator.Provider indicator = item.getIndicator();
-                mIndicatorViews[i].setText(indicator.getText());
-                mIndicatorViews[i].setTextColor(indicator.getColor());
+                String text = indicator.getText();
+                int color = indicator.getColor();
+                Log.d("RefreshIndicators", "item=" + item.getName() + " text=" + text);
+                mIndicatorViews[i].setText(text);
+                mIndicatorViews[i].setTextColor(color);
+                mIndicatorViews[i].invalidate();
             }
         }
     }
@@ -72,6 +76,7 @@ public class GolfCardScrollAdapter extends CardScrollAdapter {
         root.setGravity(Gravity.CENTER);
         root.setPadding(dp(ctx, 40), dp(ctx, 20), dp(ctx, 40), dp(ctx, 20));
 
+        // Optional icon — works for both TOGGLE and SLIDER items
         if (item.hasIcon()) {
             ImageView icon = new ImageView(ctx);
             icon.setImageResource(item.getIconResId());
@@ -84,6 +89,7 @@ public class GolfCardScrollAdapter extends CardScrollAdapter {
             root.addView(icon);
         }
 
+        // Item name
         TextView nameView = new TextView(ctx);
         nameView.setText(item.getName());
         nameView.setTextColor(Color.WHITE);
@@ -92,15 +98,23 @@ public class GolfCardScrollAdapter extends CardScrollAdapter {
         nameView.setGravity(Gravity.CENTER);
         root.addView(nameView);
 
+        // Optional indicator — works for both TOGGLE and SLIDER items
         if (item.hasIndicator()) {
             GolfIndicator.Provider indicator = item.getIndicator();
             TextView indicatorView = new TextView(ctx);
             indicatorView.setText(indicator.getText());
             indicatorView.setTextColor(indicator.getColor());
             indicatorView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+            indicatorView.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
             indicatorView.setGravity(Gravity.CENTER);
+            LinearLayout.LayoutParams indicatorParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            indicatorParams.topMargin = dp(ctx, 4);
+            indicatorView.setLayoutParams(indicatorParams);
             root.addView(indicatorView);
-            mIndicatorViews[index] = indicatorView; // ← store the ref
+            mIndicatorViews[index] = indicatorView;
         }
 
         return root;

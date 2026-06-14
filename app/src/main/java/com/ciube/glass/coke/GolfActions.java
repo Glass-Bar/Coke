@@ -1,14 +1,12 @@
 package com.ciube.glass.coke;
 
-import android.util.Log;
-
-import java.io.DataOutputStream;
+import android.content.Context;
+import android.media.AudioManager;
+import android.net.wifi.WifiManager;
 
 public class GolfActions {
 
     private static final String TAG = "GolfActions";
-
-    // --- Root helper ---
 
     private static void runAsRoot(String... commands) {
         try {
@@ -16,7 +14,6 @@ public class GolfActions {
                 Log.d(TAG, "Running: " + cmd);
                 Process process = Runtime.getRuntime().exec(cmd);
 
-                // Drain stdout
                 java.io.BufferedReader stdout = new java.io.BufferedReader(
                     new java.io.InputStreamReader(process.getInputStream()));
                 String line;
@@ -24,7 +21,6 @@ public class GolfActions {
                     Log.d(TAG, "stdout: " + line);
                 }
 
-                // Drain stderr
                 java.io.BufferedReader stderr = new java.io.BufferedReader(
                     new java.io.InputStreamReader(process.getErrorStream()));
                 while ((line = stderr.readLine()) != null) {
@@ -39,13 +35,18 @@ public class GolfActions {
         }
     }
 
-    // --- Actions ---
-
-    public static void toggleWifi(android.content.Context context) {
-        android.net.wifi.WifiManager wifiManager =
-            (android.net.wifi.WifiManager) context.getSystemService(android.content.Context.WIFI_SERVICE);
+    // value is unused for toggles, required by GolfAction interface
+    public static void toggleWifi(Context context, int value) {
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         boolean isOn = wifiManager.isWifiEnabled();
-        Log.d(TAG, "WiFi currently: " + (isOn ? "ON" : "OFF") + ", toggling...");
         wifiManager.setWifiEnabled(!isOn);
+    }
+
+    public static void setScreenTimeout(Context context, int seconds) {
+        android.provider.Settings.System.putInt(
+            context.getContentResolver(),
+            android.provider.Settings.System.SCREEN_OFF_TIMEOUT,
+            seconds * 1000
+        );
     }
 }

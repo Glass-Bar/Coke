@@ -12,13 +12,29 @@ public class GolfMenuItems {
             new GolfMenuItem("Toggle WiFi",
                 new GolfAction() {
                     @Override
-                    public void execute() {
-                        GolfActions.toggleWifi(context);
+                    public void execute(int value) {
+                        GolfActions.toggleWifi(context, value);
                     }
                 },
                 GolfIndicators.wifi(context)
-            )
+            ),
 
+            new GolfMenuItem("Screen Delay",
+                new GolfAction() {
+                    @Override
+                    public void execute(int value) {
+                        GolfActions.setScreenTimeout(context, value);
+                    }
+                },
+                GolfIndicators.screenDelay(context),
+                1, 60,
+                new GolfMenuItem.InitialValueProvider() {
+                    @Override
+                    public int get() {
+                        return GolfIndicators.getScreenTimeoutSeconds(context);
+                    }
+                }
+            )
         );
     }
 }
