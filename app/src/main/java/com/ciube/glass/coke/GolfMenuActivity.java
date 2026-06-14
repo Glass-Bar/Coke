@@ -24,6 +24,7 @@ import java.util.List;
 public class GolfMenuActivity extends Activity {
 
     private static final String TAG = "GolfMenuActivity";
+    private final android.os.Handler mHandler = new android.os.Handler();
 
     private CardScrollView mCardScrollView;
     private GolfCardScrollAdapter mAdapter;
@@ -33,7 +34,8 @@ public class GolfMenuActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        List<GolfMenuItem> items = GolfMenuItems.getItems(this);        mAdapter = new GolfCardScrollAdapter(this, items);
+        List<GolfMenuItem> items = GolfMenuItems.getItems(this);        
+        mAdapter = new GolfCardScrollAdapter(this, items);
 
         mCardScrollView = new CardScrollView(this);
         mCardScrollView.setAdapter(mAdapter);
@@ -86,6 +88,12 @@ public class GolfMenuActivity extends Activity {
             @Override
             public void run() {
                 action.execute();
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.refreshIndicators();
+                    }
+                }, 1500); // wait 1.5s for the command to take effect
             }
         }).start();
     }

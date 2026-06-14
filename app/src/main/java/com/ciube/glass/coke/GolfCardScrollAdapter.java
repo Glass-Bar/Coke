@@ -27,49 +27,51 @@ public class GolfCardScrollAdapter extends CardScrollAdapter {
 
     private final List<GolfMenuItem> mItems;
     private final View[] mViews;
+    private final TextView[] mIndicatorViews; // ← store refs to indicator TextViews
 
     public GolfCardScrollAdapter(Context context, List<GolfMenuItem> items) {
         mItems = items;
         mViews = new View[items.size()];
+        mIndicatorViews = new TextView[items.size()];
 
-        // Build all views once up front
         for (int i = 0; i < items.size(); i++) {
-            mViews[i] = buildCardView(context, items.get(i));
+            mViews[i] = buildCardView(context, items.get(i), i);
         }
     }
 
-    // --- CardScrollAdapter contract ---
+    @Override
+    public int getCount() { return mItems.size(); }
 
     @Override
-    public int getCount() {
-        return mItems.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return mItems.get(position);
-    }
+    public Object getItem(int position) { return mItems.get(position); }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return mViews[position]; // return cached view — zero allocation
+        return mViews[position];
     }
 
     @Override
-    public int getPosition(Object item) {
-        return mItems.indexOf(item);
+    public int getPosition(Object item) { return mItems.indexOf(item); }
+
+    /** Call this after an action executes to refresh all indicators. */
+    public void refreshIndicators() {
+        for (int i = 0; i < mItems.size(); i++) {
+            GolfMenuItem item = mItems.get(i);
+            if (item.hasIndicator() && mIndicatorViews[i] != null) {
+                GolfIndicator.Provider indicator = item.getIndicator();
+                mIndicatorViews[i].setText(indicator.getText());
+                mIndicatorViews[i].setTextColor(indicator.getColor());
+            }
+        }
     }
 
-    // --- Card view builder ---
-
-    private View buildCardView(Context ctx, GolfMenuItem item) {
+    private View buildCardView(Context ctx, GolfMenuItem item, int index) {
         LinearLayout root = new LinearLayout(ctx);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setBackgroundColor(Color.TRANSPARENT);
         root.setGravity(Gravity.CENTER);
         root.setPadding(dp(ctx, 40), dp(ctx, 20), dp(ctx, 40), dp(ctx, 20));
 
-        // Optional icon
         if (item.hasIcon()) {
             ImageView icon = new ImageView(ctx);
             icon.setImageResource(item.getIconResId());
@@ -82,19 +84,24 @@ public class GolfCardScrollAdapter extends CardScrollAdapter {
             root.addView(icon);
         }
 
-        // Item name
         TextView nameView = new TextView(ctx);
         nameView.setText(item.getName());
         nameView.setTextColor(Color.WHITE);
         nameView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
         nameView.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
         nameView.setGravity(Gravity.CENTER);
-        LinearLayout.LayoutParams nameParams = new LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-        nameView.setLayoutParams(nameParams);
         root.addView(nameView);
+
+        if (item.hasIndicator()) {
+            GolfIndicator.Provider indicator = item.getIndicator();
+            TextView indicatorView = new TextView(ctx);
+            indicatorView.setText(indicator.getText());
+            indicatorView.setTextColor(indicator.getColor());
+            indicatorView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+            indicatorView.setGravity(Gravity.CENTER);
+            root.addView(indicatorView);
+            mIndicatorViews[index] = indicatorView; // ← store the ref
+        }
 
         return root;
     }
