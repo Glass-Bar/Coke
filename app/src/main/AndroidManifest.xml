@@ -26,6 +26,21 @@
                 android:resource="@xml/voice_trigger" />
         </activity>
 
+        <!-- Alias: voice trigger "roll dice" also launches MainActivity -->
+        <activity-alias
+            android:name="com.ciube.glass.coke.MainActivityDiceAlias"
+            android:targetActivity="com.ciube.glass.coke.MainActivity"
+            android:label="@string/app_name"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
+            </intent-filter>
+            <meta-data
+                android:name="com.google.android.glass.VoiceTrigger"
+                android:resource="@xml/voice_trigger_dice" />
+        </activity-alias>
+
         <!-- Immersion activity: scrollable list of golf utilities -->
         <activity
             android:name="com.ciube.glass.coke.GolfMenuActivity"
