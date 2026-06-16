@@ -36,6 +36,23 @@ public class GolfMenuItems {
                         return GolfIndicators.getScreenTimeoutSeconds(context);
                     }
                 }
+            ),
+
+            new GolfMenuItem("Screen Brightness",
+                new GolfAction() {
+                    @Override
+                    public void execute(int value) {
+                        GolfActions.setScreenBrightness(context, value);
+                    }
+                },
+                GolfIndicators.screenBrightness(context),
+                1, 100,
+                new GolfMenuItem.InitialValueProvider() {
+                    @Override
+                    public int get() {
+                        return GolfIndicators.getScreenBrightnessLevel(context);
+                    }
+                }
             )
         );
     }

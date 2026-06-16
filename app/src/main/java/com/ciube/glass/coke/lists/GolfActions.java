@@ -50,4 +50,12 @@ public class GolfActions {
             seconds * 1000
         );
     }
+
+    public static void setScreenBrightness(Context context, int value) {
+        android.provider.Settings.System.putInt(
+            context.getContentResolver(), 
+            android.provider.Settings.System.SCREEN_BRIGHTNESS, 
+            Math.round(value * 2.55f)
+        );
+    }
 }

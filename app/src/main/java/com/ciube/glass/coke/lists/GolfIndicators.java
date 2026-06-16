@@ -54,4 +54,27 @@ public class GolfIndicators {
             }
         };
     }
+
+    public static int getScreenBrightnessLevel(Context context) {
+        int brightnessValue = Settings.System.getInt(
+            context.getContentResolver(),
+            Settings.System.SCREEN_BRIGHTNESS,
+            128
+        );
+        return Math.round((brightnessValue / 255.0f) * 100);
+    }
+
+    public static GolfIndicator.Provider screenBrightness(final Context context) {
+        return new GolfIndicator.Provider() {
+            @Override
+            public String getText() {
+                return getScreenBrightnessLevel(context) + "%";
+            }
+
+            @Override
+            public int getColor() {
+                return GolfIndicator.WHITE;
+            }
+        };
+    }
 }

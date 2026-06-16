@@ -113,7 +113,7 @@ public class GolfMenuActivity extends Activity {
                 executeAction(sliderItem, value);
                 return true;
             case SWIPE_DOWN:
-                playSoundTap();
+                playSoundDismiss();
                 closeSlider();
                 return true;
             default:
