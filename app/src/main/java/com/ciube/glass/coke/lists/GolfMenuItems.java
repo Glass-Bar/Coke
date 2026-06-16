@@ -5,10 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 import com.ciube.glass.coke.item.GolfAction;
 import com.ciube.glass.coke.item.GolfMenuItem;
+import android.view.Window;
 
 public class GolfMenuItems {
 
-    public static List<GolfMenuItem> getItems(final Context context) {
+public static List<GolfMenuItem> getItems(final Context context, final Window window) {
         return Arrays.asList(
 
             new GolfMenuItem("Toggle WiFi",
@@ -42,8 +43,7 @@ public class GolfMenuItems {
                 new GolfAction() {
                     @Override
                     public void execute(int value) {
-                        GolfActions.setScreenBrightness(context, value);
-                    }
+                        GolfActions.setScreenBrightness(window, context, value);                    }
                 },
                 GolfIndicators.screenBrightness(context),
                 1, 100,

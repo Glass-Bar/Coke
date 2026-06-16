@@ -4,6 +4,9 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 import android.util.Log;
+import android.provider.Settings;
+import android.view.Window;
+import android.view.WindowManager;
 
 public class GolfActions {
 
@@ -51,11 +54,20 @@ public class GolfActions {
         );
     }
 
-    public static void setScreenBrightness(Context context, int value) {
-        android.provider.Settings.System.putInt(
-            context.getContentResolver(), 
-            android.provider.Settings.System.SCREEN_BRIGHTNESS, 
-            Math.round(value * 2.55f)
+    public static void setScreenBrightness(Window window, Context context, int value) {
+        int raw = Math.round(value * 2.55f);
+        Settings.System.putInt(
+            context.getContentResolver(),
+            Settings.System.SCREEN_BRIGHTNESS_MODE,
+            Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL
         );
+        Settings.System.putInt(
+            context.getContentResolver(),
+            Settings.System.SCREEN_BRIGHTNESS,
+            raw
+        );
+        WindowManager.LayoutParams lp = window.getAttributes();
+        lp.screenBrightness = raw / 255.0f;
+        window.setAttributes(lp);
     }
 }

@@ -38,7 +38,7 @@ public class GolfMenuActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        List<GolfMenuItem> items = GolfMenuItems.getItems(this);
+        List<GolfMenuItem> items = GolfMenuItems.getItems(this, getWindow());
         mAdapter = new GolfCardScrollAdapter(this, items);
 
         mCardScrollView = new CardScrollView(this);
@@ -159,5 +159,10 @@ public class GolfMenuActivity extends Activity {
     private void playSoundTap() {
         AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audio.playSoundEffect(Sounds.TAP);
+    }
+
+    private void playSoundDismiss() {
+        AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audio.playSoundEffect(Sounds.DISMISSED);
     }
 }
