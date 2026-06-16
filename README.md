@@ -5,11 +5,16 @@ A Glass utility Glassware
 - AI slopped
 - tested on XE 24
 
+---
+
 ### Avaibles functions
 | Name | Description |
 |---|---|
 | Wifi Toggle | Enable / Disable Wifi - persists after shutdown |
 | Screen Off Timeout | Set how long the display remains illuminated during periods of inactivity |
+| Screen Brightness | Set the display brightness level |
+
+---
 
 ### Add a new Item
 
