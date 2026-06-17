@@ -54,7 +54,7 @@ public class GolfActions {
         );
     }
 
-    public static void setScreenBrightness(Window window, Context context, int value) {
+    public static void setScreenBrightness(final Window window, Context context, int value) {
         int raw = Math.round(value * 2.55f);
         Settings.System.putInt(
             context.getContentResolver(),
@@ -66,8 +66,15 @@ public class GolfActions {
             Settings.System.SCREEN_BRIGHTNESS,
             raw
         );
-        WindowManager.LayoutParams lp = window.getAttributes();
-        lp.screenBrightness = raw / 255.0f;
-        window.setAttributes(lp);
+
+        final float brightness = raw / 255.0f;
+        window.getDecorView().post(new Runnable() {
+            @Override
+            public void run() {
+                WindowManager.LayoutParams lp = window.getAttributes();
+                lp.screenBrightness = brightness;
+                window.setAttributes(lp);
+            }
+        });
     }
 }
